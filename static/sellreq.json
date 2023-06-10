@@ -1,0 +1,23 @@
+{
+    "Ecoware": [
+        {
+            "price": 0.05,
+            "share_count": 3
+        },
+        {
+            "price": 0.03,
+            "share_count": 2
+        }
+    ],
+    "Greentech": [
+        {
+            "price": 10.50,
+            "share_count": 5
+        },
+        {
+            "price": 11.20,
+            "share_count": 7
+        },
+        
+    ]
+}

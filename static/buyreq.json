@@ -1,0 +1,23 @@
+{
+    "Petnest": [
+        {
+            "price": 8.25,
+            "share_count": 4
+        },
+        {
+            "price": 9.75,
+            "share_count": 2
+        }
+    ],
+    "Greentech": [
+        {
+            "price": 10.50
+            "share_count": 2
+        },
+        {
+            "price": 11.20,
+            "share_count": 3
+        },
+        
+    ]
+}
