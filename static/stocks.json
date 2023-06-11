@@ -1,6 +1,6 @@
 {
     "Ecoware": {
-        "price": 10.0,
+        "price": 11.5,
         "share_count": 200,
         "description": "Eco-friendly and sustainable kitchenware made from recycled materials.",
         "long_description": "Introducing our extraordinary range of kitchenware\n Designed with a strong commitment to the environment, our collection showcases a wide array of **eco-friendly** and **sustainable** products, meticulously crafted from carefully selected recycled materials. By choosing our kitchenware, you not only contribute to reducing waste and minimizing your carbon footprint, but also embrace a greener lifestyle that aligns with your values.\n #### Stylish and Durable Utensils\n From *stylish* and *durable* utensils made from recycled bamboo to cutting-edge cookware manufactured using innovative upcycled materials, every piece in our collection reflects our dedication to sustainability.\n #### Making a Positive Impact\n Experience the joy of cooking and dining while making a **positive impact** on the planet with our exceptional range of eco-conscious kitchenware.",
@@ -54,7 +54,7 @@
         ]
     },
     "Greentech": {
-        "price": 10.5,
+        "price": 11.2,
         "share_count": 180,
         "description": "A startup developing renewable energy tracking software for individuals and enterprises.",
         "image": "https://builtin.com/sites/www.builtin.com/files/styles/og/public/2022-09/greentech.png",

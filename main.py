@@ -35,7 +35,26 @@ def dashboard():
             personal_data[name]['percent'] = (current_prices[name] * ad['shares'] - ad['price_bought'] * ad['shares']) / (ad['price_bought'] * ad['shares'])
             personal_data[name]['current_price'] = current_prices[name]
 
-    print(personal_data)
+    # w3 = Web3(Web3.EthereumTesterProvider())
+
+    # with open('static/address.txt') as f:
+    #     address = f.read()
+    # with open('static/project.sol') as f:
+    #     compiled_sol = compile_source(f.read(), output_values=['abi', 'bin'])
+    #     contract_id, contract_interface = compiled_sol.popitem()
+    #     bytecode = contract_interface['bin']
+
+    #     # get abi
+
+    #     abi = contract_interface['abi']
+
+    # print(address, abi)
+
+    # contract_instance = w3.eth.contract(address=address, abi=abi) 
+
+    # print(contract_instance)
+
+    # print(contract_instance.functions.getLatestStock().call())  
 
     return render_template('dashboard.html', page_title="Dashboard · Seedchain", success=success, personal_data=personal_data)
 
@@ -260,15 +279,15 @@ def instant_buy(name, shares):
 
                 w3.eth.default_account = w3.eth.accounts[0]
 
-                Greeter = w3.eth.contract(abi=abi, bytecode=bytecode)
+                Transaction = w3.eth.contract(abi=abi, bytecode=bytecode)
 
                 # Submit the transaction that deploys the contract
 
-                tx_hash = Greeter.constructor().transact()
+                tx_hash = Transaction.constructor().transact()
 
                 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 
-                greeter = w3.eth.contract(
+                transaction = w3.eth.contract(
 
                     address=tx_receipt.contractAddress,
 
@@ -276,11 +295,14 @@ def instant_buy(name, shares):
 
                 )
 
-                tx_hash = greeter.functions.setLatestTransaction(name, shares).transact()
+                print(tx_receipt.contractAddress, abi)
+
+                tx_hash = transaction.functions.setLatestTransaction(name, shares, int(tot_price / shares)).transact()
 
                 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 
-                print(greeter.functions.getLatestTransaction().call())
+                print(transaction.functions.getLatestStock().call())
+                print(transaction.functions.getLength().call())
             
 
         return redirect(url_for('dashboard', success=True))

@@ -1,32 +1,47 @@
 pragma solidity >0.5.0;
 
 
-contract LatestTransaction {
+contract Transaction {
 
-    string public stock;
-    uint public shares;
+    string[] public stock;
+    uint[] public shares;
+    uint[] public money;
 
 
     constructor() public {
 
-        stock = 'test';
-        shares = 0;
+    }
+
+
+    function setLatestTransaction(string memory _stock, uint _shares, uint _money) public {
+
+        stock.push(_stock);
+        shares.push(_shares);
+        money.push(_money);
 
     }
 
 
-    function setLatestTransaction(string memory _stock, uint _shares) public {
+    function getLatestStock() view public returns (string memory) {
 
-        stock = _stock;
-        shares = _shares;
+        return stock[stock.length - 1];
 
     }
 
+    function getLatestShares() view public returns (uint) {
 
-    function getLatestTransaction() view public returns (string memory) {
+        return shares[stock.length - 1];
 
-        return stock;
+    }
 
+    function getLatestMoney() view public returns (uint) {
+
+        return money[stock.length - 1];
+
+    }
+
+    function getLength() view public returns (uint) {
+        return stock.length;
     }
 
 }
