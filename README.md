@@ -1,5 +1,5 @@
 # Seedchain
-
+![Seedchain Banner](static/banner.png)
 ## Inspiration
 We were inspired by our university friends, many of whom have had ideas for innovative side projects or micro startups that never saw the light of day. Many of these side projects had the potential to revolutionize the way we live and improve the financial situation of university students.
 
