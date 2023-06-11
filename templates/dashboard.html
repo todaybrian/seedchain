@@ -1,67 +1,104 @@
 {% extends "base_logged_in.html" %}
 {% block content %}
-  <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
-    <div
-      class="col-span-1 sm:col-span-2 lg:col-span-4 bg-white rounded-lg dark:bg-gray-600 drop-shadow-lg p-4"
-    >
-  <h1 class="text-xl font-bold">Your Stocks</h1>
-  <div class="grid grid-cols-2 gap-4 mb-4 mt-4">
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
-  </div>
-  </div>
-    <div
-      class="col-span-1 sm:col-span-1 lg:col-span-2 bg-white rounded-lg dark:bg-gray-600 h-auto drop-shadow-lg p-4"
-    >
-    <h1 class="text-xl font-bold">Hot Stocks</h1>
-  </div>
-    <div
-      class="bg-white rounded-lg dark:bg-gray-600 h-32 md:h-64 shadow hidden sm:block lg:hidden"
-    ></div>
-  </div>
-            <div
-    class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"
-  ></div>
-  <div class="grid grid-cols-2 gap-4 mb-4">
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
+
+{% if success %}
+<div class="flex w-full rounded bg-green-500 p-4 mb-4 text-white">
+  Your transaction was a success!
+</div>
+{% endif %}
+<div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
+  <div class="col-span-1 sm:col-span-2 lg:col-span-4 bg-white rounded-lg dark:bg-gray-600 drop-shadow-lg p-4">
+    <h1 class="text-xl font-bold">Your Assets</h1>
+    <div class="flex border-2 justify-center">
+      <div class="h-80 w-full">
+        <canvas id="pieChart" class="mx-auto w-full"></canvas>
+      </div>
+    </div>
+    <hr>
   </div>
   <div
-    class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"
-  ></div>
-  <div class="grid grid-cols-2 gap-4">
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
-    <div
-      class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
-    ></div>
+    class="col-span-1 border-2 sm:col-span-1 lg:col-span-2 bg-white rounded-lg dark:bg-gray-600 h-auto drop-shadow-lg p-4">
+    <h1 class="text-xl font-bold">Hot Stocks 🔥</h1>
+    <table class="border-collapse table-auto w-full mt-2">
+      <thead class="text-xs uppercase">
+        <tr class="border-b bg-gray-200 rounded">
+          <th class="font-medium p-4 text-left">Stock</th>
+          <th class="font-medium p-4 text-left">Price</th>
+          <th class="font-medium p-4 text-left">View</th>
+        </tr>
+      <tbody>
+        <tr class="border-b">
+          <td class="p-4">Ecoware</td>
+          <td class="p-4">$153.05</td>
+          <td class="p-4"><a href="/stock/Ecoware"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">View</a>
+          </td>
+        </tr>
+        <tr class="border-b">
+          <td class="p-4">Petnest</td>
+          <td class="p-4">$48.97</td>
+          <td class="p-4"><a href="/stock/Petnest"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">View</a>
+          </td>
+        </tr>
+        <tr class="border-b">
+          <td class="p-4">Fitfuel</td>
+          <td class="p-4">$18.52</td>
+          <td class="p-4"><a href="/stock/Fitfuel"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">View</a>
+          </td>
+        </tr>
+        <tr class="border-b">
+          <td class="p-4">Greentech</td>
+          <td class="p-4">$14.39</td>
+          <td class="p-4"><a href="/stock/Greentech"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">View</a>
+          </td>
+        </tr>
+      </tbody>
+      </thead>
+
+    </table>
   </div>
-  
+  <div class="bg-white rounded-lg dark:bg-gray-600 h-32 md:h-64 shadow hidden sm:block lg:hidden"></div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+  <a href="/stock/<name>">
+    <div
+      class="bg-white border-2 border-gray-300 rounded-lg dark:border-gray-600 hover:shadow-xl transition-all duration-200 h-32 md:h-64 p-4">
+      <h1 class="font-bold text-xl">Stock Name</h1>
+      <p class="mt-4"># of Shares Held: <span class="font-bold">123</span></p>
+      <p class="mt-4">Net Profit/Loss: <span class="font-bold">$123</span></p>
+      <p class="mt-4">% Change: <span class="font-bold">123%</span></p>
+    </div>
+  </a>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('pieChart');
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: [
+        'Red',
+        'Blue',
+        'Yellow'
+      ],
+      datasets: [{
+        label: 'My First Dataset',
+        data: [300, 50, 100],
+        backgroundColor: [
+          'rgb(255, 99, 132)',
+          'rgb(54, 162, 235)',
+          'rgb(255, 205, 86)'
+        ],
+        hoverOffset: 4
+      }]
+    }
+  });
+
+</script>
 {% endblock %}

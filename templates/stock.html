@@ -1,17 +1,106 @@
 {% extends "base_logged_in.html" %}
 {% block content %}
+
+{% if not_enough_buy %}
+<div class="rounded-lg bg-red-500 p-5 mb-4 text-white">
+    There are not enough shares on the market to fulfill your order.
+</div>
+{% endif %}
+
+{% if not_enough_sell %}
+<div class="rounded-lg bg-red-500 p-5 mb-4 text-white">
+    There are not enough shares on the market to fulfill your order, or do you don't have enough shares to sell.
+</div>
+{% endif %}
+
+
 <div class="container block lg:flex pt-10 lg:px-40 px-4 ">
     <div class="md:w-3/4 w-full lg:pr-4">
         <h1 class="text-3xl font-bold">{{ name }}</h1>
 
         <img src="{{ stocks[name]['image'] }}" class="py-4 rounded-lg">
-        <h2 class="text-xl font-bold">Prices</h2>
-        <p>$10</p>
-        <h2 class="text-xl font-bold">Description</h2>
+
+        <h2 class="text-xl font-bold">Your Holdings</h2>
+        <div class="flex mx-4">
+            <div class="w-1/3 text-center">
+              <h2 class="mt-4 text-xl">Number of Shares</h2>
+              <h2 class="mt-4 text-xl font-bold">123</h2>
+            </div>
+            
+            <div class="w-1/3 text-center">
+              <h2 class="mt-4 text-xl">Net Profit/Loss</h2>
+              <h2 class="mt-4 text-xl font-bold">$123</h2>
+            </div>
+            <div class="w-1/3 text-center">
+                <h2 class="mt-4 text-xl">% Change</h2>
+                <h2 class="mt-4 text-xl font-bold">123%</h2>
+              </div>
+          </div>
+      
+        {% if buyreq|length > 0 or sellreq|length > 0 %}
+        <h2 class="text-xl font-bold mt-4">Buy/Sell Bids</h2>
+
+        {% if buyreq|length > 0 %}
+        <h3 class="text-l font-bold mt-2">Bids</h3>
+        <div>
+            <table class="border-collapse table-auto w-full mt-2">
+                <thead class="text-xs uppercase">
+                    <tr class="border-b bg-gray-200 rounded">
+                        <th class="font-medium p-4 text-left">Quantity</th>
+                        <th class="font-medium p-4 text-left">Price</th>
+                        <th class="font-medium p-4 text-left">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in buyreq %}
+                    <tr class="border-b">
+                        <td class="p-4">{{ req.share_count }}</td>
+                        <td class="p-4">${{ "{:.2f}".format(req.price) }}</td>
+                        <td class="p-4">${{ "{:.2f}".format(req.share_count * req.price) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="mt-2 italic">No buy requests available.</p>
+        {% endif %}
+    
+        {% if sellreq|length > 0 %}
+        <h3 class="text-l font-bold mt-2">Asks</h3>
+        <div>
+            <table class="border-collapse table-auto w-full mt-2 rounded">
+                <thead class="text-xs uppercase rounded">
+                    <tr class="border-b bg-gray-200 rounded">
+                        <th class="font-medium p-4 text-left">Quantity</th>
+                        <th class="font-medium p-4 text-left">Price</th>
+                        <th class="font-medium p-4 text-left">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in sellreq %}
+                    <tr class="border-b">
+                        <td class="p-4">{{ req.share_count }}</td>
+                        <td class="p-4">${{ "{:.2f}".format(req.price) }}</td>
+                        <td class="p-4">${{ "{:.2f}".format(req.share_count * req.price) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="mt-2 italic">No sell requests available.</p>
+        {% endif %}
+        
+        {% else %}
+            <p class="mt-2 italic">No buy or sell requests available.</p>
+        {% endif %}
+        <h2 class="text-xl font-bold mt-2">Description</h2>
         <div class="prose"><md-block>{{ stocks[name]['long_description'] }}</md-block></div>
         <div class="mt-10 items-center bg-gray-50 rounded-lg shadow sm:flex dark:bg-gray-800 dark:border-gray-700">
             <a href="#">
-                <img class="w-full rounded-lg sm:rounded-none sm:rounded-l-lg" src="{{ stocks[name]['founder_img'] }}" alt="Bonnie Avatar">
+                <img class="w-full rounded-lg sm:rounded-none sm:rounded-l-lg" src="{{ stocks[name]['founder_img'] }}"
+                    alt="Bonnie Avatar">
             </a>
             <div class="p-5">
                 <h3 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -21,96 +110,227 @@
                 <ul class="flex space-x-4 sm:mt-0">
                     <li>
                         <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg>
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                                    clip-rule="evenodd" />
+                            </svg>
                         </a>
                     </li>
                     <li>
                         <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg>
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path
+                                    d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                            </svg>
                         </a>
                     </li>
                     <li>
                         <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" /></svg>
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                                    clip-rule="evenodd" />
+                            </svg>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.51 0 10-4.48 10-10S17.51 2 12 2zm6.605 4.61a8.502 8.502 0 011.93 5.314c-.281-.054-3.101-.629-5.943-.271-.065-.141-.12-.293-.184-.445a25.416 25.416 0 00-.564-1.236c3.145-1.28 4.577-3.124 4.761-3.362zM12 3.475c2.17 0 4.154.813 5.662 2.148-.152.216-1.443 1.941-4.48 3.08-1.399-2.57-2.95-4.675-3.189-5A8.687 8.687 0 0112 3.475zm-3.633.803a53.896 53.896 0 013.167 4.935c-3.992 1.063-7.517 1.04-7.896 1.04a8.581 8.581 0 014.729-5.975zM3.453 12.01v-.26c.37.01 4.512.065 8.775-1.215.25.477.477.965.694 1.453-.109.033-.228.065-.336.098-4.404 1.42-6.747 5.303-6.942 5.629a8.522 8.522 0 01-2.19-5.705zM12 20.547a8.482 8.482 0 01-5.239-1.8c.152-.315 1.888-3.656 6.703-5.337.022-.01.033-.01.054-.022a35.318 35.318 0 011.823 6.475 8.4 8.4 0 01-3.341.684zm4.761-1.465c-.086-.52-.542-3.015-1.659-6.084 2.679-.423 5.022.271 5.314.369a8.468 8.468 0 01-3.655 5.715z" clip-rule="evenodd" /></svg>
+                        <a href="#" class="text-grayd-500 hover:text-gray-900 dark:hover:text-white">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.51 0 10-4.48 10-10S17.51 2 12 2zm6.605 4.61a8.502 8.502 0 011.93 5.314c-.281-.054-3.101-.629-5.943-.271-.065-.141-.12-.293-.184-.445a25.416 25.416 0 00-.564-1.236c3.145-1.28 4.577-3.124 4.761-3.362zM12 3.475c2.17 0 4.154.813 5.662 2.148-.152.216-1.443 1.941-4.48 3.08-1.399-2.57-2.95-4.675-3.189-5A8.687 8.687 0 0112 3.475zm-3.633.803a53.896 53.896 0 013.167 4.935c-3.992 1.063-7.517 1.04-7.896 1.04a8.581 8.581 0 014.729-5.975zM3.453 12.01v-.26c.37.01 4.512.065 8.775-1.215.25.477.477.965.694 1.453-.109.033-.228.065-.336.098-4.404 1.42-6.747 5.303-6.942 5.629a8.522 8.522 0 01-2.19-5.705zM12 20.547a8.482 8.482 0 01-5.239-1.8c.152-.315 1.888-3.656 6.703-5.337.022-.01.033-.01.054-.022a35.318 35.318 0 011.823 6.475 8.4 8.4 0 01-3.341.684zm4.761-1.465c-.086-.52-.542-3.015-1.659-6.084 2.679-.423 5.022.271 5.314.369a8.468 8.468 0 01-3.655 5.715z"
+                                    clip-rule="evenodd" />
+                            </svg>
                         </a>
                     </li>
                 </ul>
             </div>
-        </div> 
+        </div>
     </div>
     <div class="md:w-1/4 w-full lg:pl-4">
-        
-        
-        <button data-modal-toggle="defaultModal"
+
+
+        <button id="investButton" data-modal-toggle="investModal"
             class="mx-auto w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Invest</button>
-        <button
+        <button data-modal-toggle="sellModal"
             class="mx-auto w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg mt-4">Sell</button>
 
     </div>
 </div>
-<!-- Modal toggle -->
-<div class="flex justify-center m-5">
-    <button id="defaultModalButton"  class="block text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="button">
-    Create product
-    </button>
-</div>
+
 
 <!-- Main modal -->
-<div id="defaultModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+<div id="investModal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
     <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
         <!-- Modal content -->
         <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
             <!-- Modal header -->
             <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    Add Product
+                    Instantly Buy
                 </h3>
-                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="defaultModal">
-                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    data-modal-toggle="investModal">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
             <!-- Modal body -->
-            <form action="#">
+            <form action="" method="post">
                 <div class="grid gap-4 mb-4 sm:grid-cols-2">
                     <div>
-                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-                        <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type product name" required="">
+                        <label for="number"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Instantly Buy
+                            Amount</label>
+                        <input type="text" name="number" id="number"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="Number of Stocks" required="">
                     </div>
-                    <div>
-                        <label for="brand" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Brand</label>
-                        <input type="text" name="brand" id="brand" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Product brand" required="">
-                    </div>
-                    <div>
-                        <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
-                        <input type="number" name="price" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required="">
-                    </div>
-                    <div>
-                        <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
-                        <select id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <option selected="">Select category</option>
-                            <option value="TV">TV/Monitors</option>
-                            <option value="PC">PC</option>
-                            <option value="GA">Gaming/Console</option>
-                            <option value="PH">Phones</option>
-                        </select>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                        <textarea id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Write product description here"></textarea>                    
-                    </div>
+
                 </div>
-                <button type="submit" class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
-                    Add new product
+
+                <button id="instant-buy" name="instant-buy" type="submit"
+                    class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    Buy
                 </button>
             </form>
+            <div
+                class="flex justify-between items-center pb-4 mt-4 rounded-t border-b border-t sm:mb-5 dark:border-gray-600">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Buy Order
+                </h3>
+            </div>
+            <form action="" method="post">
+                <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                    <div>
+                        <label for="number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Buy
+                            Order Amount</label>
+                        <input type="text" name="number" id="name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="Number of Stocks" required="">
+                    </div>
+                    <div>
+                        <label for="price"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
+                        <input type="number" name="price" id="price"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="$2999" required="">
+                    </div>
+                </div>
+                <button type="submit"  id="bid-buy" name="bid-buy"
+                    class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    Buy
+                </button>
+            </form>
+
         </div>
     </div>
 </div>
+
+<!-- Main modal -->
+<div id="sellModal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+    <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <!-- Modal header -->
+            <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Instantly Sell
+                </h3>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    data-modal-toggle="sellModal">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form action="" method="post">
+                <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                    <div>
+                        <label for="number"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Instantly Sell
+                            Amount</label>
+                        <input type="text" name="number" id="number"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="Number of Stocks" required="">
+                    </div>
+
+                </div>
+                <button id="instant-sell" name="instant-sell" type="submit"
+                    class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    Sell
+                </button>
+            </form>
+            <div
+                class="flex justify-between items-center pb-4 mt-4 rounded-t border-b border-t sm:mb-5 dark:border-gray-600">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Sell Order
+                </h3>
+            </div>
+            <form action="" method="post">
+                <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                    <div>
+                        <label for="number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sell
+                            Order Amount</label>
+                        <input type="text" name="number" id="name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="Number of Stocks" required="">
+                    </div>
+                    <div>
+                        <label for="price"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
+                        <input type="number" name="price" id="price"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="$2999" required="">
+                    </div>
+                </div>
+                <button id="bid-sell" name="bid-sell" type="submit"
+                    class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    Sell
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}

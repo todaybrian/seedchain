@@ -1,0 +1,33 @@
+{% extends "base_logged_in.html" %}
+{% block content %}
+<div class="container">
+    <h1 class="text-3xl mb-2 font-bold">Order Confirmation</h1>
+    <hr>
+    <table class="border-collapse table-auto w-full mt-10">
+        <thead class="text-xs uppercase">
+            <tr class="border-b bg-gray-200 rounded">
+                <th class="font-medium p-4 text-left">Order</th>
+                <th class="font-medium p-4 text-left">Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="border-b ">
+                <td class="p-4">{{ order_desc }} - {{ name }}</td>
+                <td class="p-4">${{ tot_price }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- EDIT THIS -->
+    <form action="" method="post">
+        <input class="hidden" name="is_buy" type="text" value="">
+        <input class="hidden" name="stock_name" type="text" value="">
+        <input class="hidden" name="number_of_stocks" type="number" value="">
+        <input class="hidden" name="cost" type="number" value="">
+
+        <button type="submit"
+            class="mt-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Confirm
+            Order</button>
+    </form>
+</div>
+{% endblock %}

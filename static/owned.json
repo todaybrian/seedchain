@@ -1,0 +1,14 @@
+{
+    "Petnest": {
+        "shares": 10,
+        "price_bought": 10.5
+    },
+    "Greentech": {
+        "shares": 3,
+        "price_bought": 8.2
+    },
+    "Ecoware": {
+        "price_bought": 10.25,
+        "shares": 2
+    }
+}
