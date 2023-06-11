@@ -24,16 +24,22 @@
         <div class="flex mx-4">
             <div class="w-1/3 text-center">
               <h2 class="mt-4 text-xl">Number of Shares</h2>
-              <h2 class="mt-4 text-xl font-bold">123</h2>
+              <h2 class="mt-4 text-xl font-bold">{{ personal_data['shares'] }}</h2>
             </div>
             
             <div class="w-1/3 text-center">
               <h2 class="mt-4 text-xl">Net Profit/Loss</h2>
-              <h2 class="mt-4 text-xl font-bold">$123</h2>
+              {% if personal_data['net'] < 0 %}
+              <h2 class="mt-4 text-xl font-bold text-red-500">${{ personal_data['net']|round(2) }}</h2>
+              {% elif personal_data['net'] > 0 %}
+              <h2 class="mt-4 text-xl font-bold text-green-500">${{ personal_data['net']|round(2) }}</h2>
+              {% else %}
+              <h2 class="mt-4 text-xl font-bold">${{ personal_data['net']|round(2) }}</h2>
+              {% endif %}
             </div>
             <div class="w-1/3 text-center">
                 <h2 class="mt-4 text-xl">% Change</h2>
-                <h2 class="mt-4 text-xl font-bold">123%</h2>
+                <h2 class="mt-4 text-xl font-bold">{{ personal_data['percent']|round(2) }}%</h2>
               </div>
           </div>
       

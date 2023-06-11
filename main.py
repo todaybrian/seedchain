@@ -15,7 +15,27 @@ def index():
 @app.route('/dashboard')
 def dashboard():
     success = request.args.get('success', False)
-    return render_template('dashboard.html', page_title="Dashboard · Seedchain", success=success)
+    personal_data = {}
+    current_prices = {}
+    with open('static/stocks.json') as f:
+        ad = json.loads(f.read())
+        for name in ad:
+            current_prices[name] = ad[name]['price']
+
+    with open('static/owned.json') as f:
+        aad = json.loads(f.read())
+        personal_data = {}
+        for name in aad:
+            personal_data[name] = {'shares': 0, 'net': 0, 'percent': 0, 'current_price': 0}
+            ad = aad[name]
+            personal_data[name]['shares'] = ad['shares']
+            personal_data[name]['net'] = (current_prices[name] - ad['price_bought']) * ad['shares']
+            personal_data[name]['percent'] = (current_prices[name] * ad['shares'] - ad['price_bought'] * ad['shares']) / (ad['price_bought'] * ad['shares'])
+            personal_data[name]['current_price'] = current_prices[name]
+
+    print(personal_data)
+
+    return render_template('dashboard.html', page_title="Dashboard · Seedchain", success=success, personal_data=personal_data)
 
 
 @app.route('/browse')
@@ -34,6 +54,21 @@ def browse():
 def specific_stock(name):
     not_enough_buy = False
     not_enough_sell = False
+
+    current_price = 0
+    with open('static/stocks.json') as f:
+        current_price = json.loads(f.read())[name]['price']
+
+    with open('static/owned.json') as f:
+        ad = json.loads(f.read())
+        personal_data = {'shares': 0, 'net': 0, 'percent': 0}
+        if name in ad:
+            ad = ad[name]
+            personal_data['shares'] = ad['shares']
+            personal_data['net'] = (current_price - ad['price_bought']) * ad['shares']
+            personal_data['percent'] = (current_price * ad['shares'] - ad['price_bought'] * ad['shares']) / (ad['price_bought'] * ad['shares'])
+
+
     if request.method == 'POST':
         # the user selected instant buy, not bid buy
         if 'instant-buy' in request.form:
@@ -99,7 +134,7 @@ def specific_stock(name):
         except KeyError:
             sellreq = []        
         
-    return render_template('stock.html', name = name, stocks=d, not_enough_buy=not_enough_buy, not_enough_sell=not_enough_sell, buyreq=buyreq, sellreq=sellreq, page_title=f"{name} - {d[name]['founder']} · Seedchain")
+    return render_template('stock.html', personal_data=personal_data, name = name, stocks=d, not_enough_buy=not_enough_buy, not_enough_sell=not_enough_sell, buyreq=buyreq, sellreq=sellreq, page_title=f"{name} - {d[name]['founder']} · Seedchain")
 
 @app.route('/order/<name>/instant-buy/<shares>', methods=['GET', 'POST'])
 def instant_buy(name, shares):
@@ -378,6 +413,10 @@ def bid_sell(name, shares, price):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500
 
 
 # Run the application

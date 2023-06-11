@@ -62,16 +62,34 @@
   </div>
   <div class="bg-white rounded-lg dark:bg-gray-600 h-32 md:h-64 shadow hidden sm:block lg:hidden"></div>
 </div>
+
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-  <a href="/stock/<name>">
+  {% for data in personal_data %}
+
+  <a href="/stock/{{ data }}">
     <div
       class="bg-white border-2 border-gray-300 rounded-lg dark:border-gray-600 hover:shadow-xl transition-all duration-200 h-32 md:h-64 p-4">
-      <h1 class="font-bold text-xl">Stock Name</h1>
-      <p class="mt-4"># of Shares Held: <span class="font-bold">123</span></p>
-      <p class="mt-4">Net Profit/Loss: <span class="font-bold">$123</span></p>
-      <p class="mt-4">% Change: <span class="font-bold">123%</span></p>
+      <h1 class="font-bold text-xl">{{ data }}</h1>
+      <p class="mt-4"># of Shares Held: <span class="font-bold">{{ personal_data[data]['shares'] }}</span></p>
+      {% if personal_data[data]['net'] < 0 %}
+      <p class="mt-4">Net Profit/Loss: <span class="font-bold text-red-500">${{ personal_data[data]['net']|round(2) }}</span></p>
+      {% elif personal_data[data]['net'] > 0 %}
+      <p class="mt-4">Net Profit/Loss: <span class="font-bold text-green-500">${{ personal_data[data]['net']|round(2) }}</span></p>
+      {% else %}
+      <p class="mt-4">Net Profit/Loss: <span class="font-bold">${{ personal_data[data]['net']|round(2) }}</span></p>
+      {% endif %}
+
+      {% if personal_data[data]['net'] < 0 %}
+      <p class="mt-4">% Change: <span class="font-bold text-red-500">{{ personal_data[data]['percent']|round(2) }}%</span></p>
+      {% elif personal_data[data]['net'] > 0 %}
+      <p class="mt-4">% Change: <span class="font-bold text-green-500">{{ personal_data[data]['percent']|round(2) }}%</span></p>
+      {% else %}
+      <p class="mt-4">% Change: <span class="font-bold">{{ personal_data[data]['percent']|round(2) }}%</span></p>
+      {% endif %}
+      
     </div>
   </a>
+  {% endfor %}
 
 </div>
 
@@ -79,22 +97,24 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   const ctx = document.getElementById('pieChart');
+
+  let money = [];
+  let names = [];
+  
+  {% for stock in personal_data %}
+  money.push( {{ (personal_data[stock]['current_price'] * personal_data[stock]['shares'])|round(2) }} );
+  names.push("{{ stock }}")
+  {% endfor %}
+
+  console.log(money, names)
+
   new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: [
-        'Red',
-        'Blue',
-        'Yellow'
-      ],
+      labels: names,
       datasets: [{
-        label: 'My First Dataset',
-        data: [300, 50, 100],
-        backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(54, 162, 235)',
-          'rgb(255, 205, 86)'
-        ],
+        label: 'Price',
+        data: money,
         hoverOffset: 4
       }]
     }
