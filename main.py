@@ -1,5 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect
 import json
+from web3 import Web3
+from solcx import compile_source
 
 app = Flask(
   __name__,
@@ -240,6 +242,45 @@ def instant_buy(name, shares):
             f.truncate(0)
             f.seek(0)
             f.write(json.dumps(all_val, indent=4))
+
+            with open('static/project.sol') as f:
+                compiled_sol = compile_source(f.read(), output_values=['abi', 'bin'])
+                contract_id, contract_interface = compiled_sol.popitem()
+                bytecode = contract_interface['bin']
+
+                # get abi
+
+                abi = contract_interface['abi']
+
+                # web3.py instance
+
+                w3 = Web3(Web3.EthereumTesterProvider())
+
+                # set pre-funded account as sender
+
+                w3.eth.default_account = w3.eth.accounts[0]
+
+                Greeter = w3.eth.contract(abi=abi, bytecode=bytecode)
+
+                # Submit the transaction that deploys the contract
+
+                tx_hash = Greeter.constructor().transact()
+
+                tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+
+                greeter = w3.eth.contract(
+
+                    address=tx_receipt.contractAddress,
+
+                    abi=abi
+
+                )
+
+                tx_hash = greeter.functions.setLatestTransaction(name, shares).transact()
+
+                tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+
+                print(greeter.functions.getLatestTransaction().call())
             
 
         return redirect(url_for('dashboard', success=True))
