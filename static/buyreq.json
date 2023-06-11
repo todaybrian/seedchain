@@ -23,6 +23,10 @@
         {
             "price": 10.0,
             "share_count": 2
+        },
+        {
+            "price": 10.0,
+            "share_count": 10
         }
     ]
 }
